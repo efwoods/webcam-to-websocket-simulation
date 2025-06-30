@@ -4,3 +4,8 @@ datetime
 torchvision
 pillow
 python-dotenv
+uvicorn
+fastapi
+prometheus-client
+pydantic
+requests

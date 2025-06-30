@@ -1,0 +1,14 @@
+services:
+  webcam-to-websocket-simulation-api:
+    container_name: webcam-to-websocket-simulation-api
+    volumes:
+      - ${STIMULUS_IMAGES_DIR}:${STIMULUS_IMAGES_DIR}
+    image: evdev3/webcam-to-websocket-simulation-api:latest
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - 8000:8000
+    restart: unless-stopped
+    env_file:
+      - .env
