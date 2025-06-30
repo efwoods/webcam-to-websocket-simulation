@@ -223,7 +223,7 @@ async def test_pipeline(payload: SimulationRequest):
         "type": "test",
         "timestamp": timestamp,
         "origin": "webcam-to-websocket-simulation",
-        "session_id": payload.json(),
+        "payload": payload.json(),
     }
     logger.info(
         f"app.state.ws_url + simulate/ws/test: {app.state.ws_url}" + "simulate/ws/test"
