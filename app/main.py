@@ -214,13 +214,14 @@ app.add_middleware(
 # app.include_router(router, prefix="/simulate", tags=["Simulate"])
 
 
-@app.get("/test/full-pipeline")
-async def test_pipeline():
+@app.post("/test/full-pipeline")
+async def test_pipeline(payload: SimulationRequest):
     timestamp = datetime.datetime.utcnow().isoformat() + "Z"
     message = {
         "type": "test",
         "timestamp": timestamp,
         "origin": "webcam-to-websocket-simulation",
+        "session_id": payload,
     }
     logger.info(
         f"app.state.ws_url + simulate/ws/test: {app.state.ws_url}" + "simulate/ws/test"
