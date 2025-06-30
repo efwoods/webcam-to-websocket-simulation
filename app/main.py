@@ -78,7 +78,8 @@ image_resize_transform = transforms.Compose(
 # Input Model
 # -----------------------------
 class SimulationRequest(BaseModel):
-    session_id: str  # This is the encrypted hash of the user_id_avatar_id
+    user_id: str
+    avatar_id: str
     enable_thought_to_image: bool = False
 
 
