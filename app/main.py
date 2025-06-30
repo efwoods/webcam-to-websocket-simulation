@@ -45,8 +45,8 @@ load_dotenv()
 WS_URI = os.getenv("WS_URI")
 assert WS_URI is not None, "WS_URI not loaded from .env"
 GITHUB_TOKEN = os.getenv("GITHUB_TOKEN")
-GIST_ID = os.getenv("GIST_ID")  # Your gist ID
-GIST_API_URL = f"https://api.github.com/gists/{GIST_ID}"
+GITHUB_GIST_ID = os.getenv("GITHUB_GIST_ID")  # Your gist ID
+GIST_API_URL = f"https://api.github.com/gists/{GITHUB_GIST_ID}"
 
 USE_PERCEPTUAL_LOSS = False
 RESIZE_DIM = (224, 224) if USE_PERCEPTUAL_LOSS else (64, 64)
