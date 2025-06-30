@@ -222,6 +222,9 @@ async def test_pipeline():
         "timestamp": timestamp,
         "origin": "webcam-to-websocket-simulation",
     }
+    logger.info(
+        f"app.state.ws_url + simulate/ws/test: {app.state.ws_url}" + "simulate/ws/test"
+    )
     try:
         async with websockets.connect(
             app.state.ws_url + "simulate/ws/test"
