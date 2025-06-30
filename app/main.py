@@ -188,6 +188,7 @@ async def lifespan(app: FastAPI):
     print("[Startup] FastAPI simulation sender is live")
     app.state.simulation_index = 0
     fetch_ngrok_url()
+    logger.info(f"ngrok_url set: {ngrok_url}")
     app.state.ws_url = ngrok_url + WS_URI
     yield
     print("[Shutdown] Shutting down sender...")
