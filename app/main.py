@@ -6,7 +6,7 @@ import base64
 from io import BytesIO
 from contextlib import asynccontextmanager
 from pydantic import BaseModel
-
+import datetime
 from fastapi import FastAPI
 from PIL import Image
 import websockets
@@ -51,6 +51,11 @@ GIST_API_URL = f"https://api.github.com/gists/{GITHUB_GIST_ID}"
 USE_PERCEPTUAL_LOSS = False
 RESIZE_DIM = (224, 224) if USE_PERCEPTUAL_LOSS else (64, 64)
 
+{
+    "type": "test",
+    "timestamp": "2025-06-30T01:55:00Z",
+    "origin": "webcam-to-websocket-simulation",
+}
 
 # -----------------------------
 # Dataset paths
@@ -183,7 +188,7 @@ async def lifespan(app: FastAPI):
     print("[Startup] FastAPI simulation sender is live")
     app.state.simulation_index = 0
     fetch_ngrok_url()
-    app.state.ws_url_test = ngrok_url + WS_URI
+    app.state.ws_url = ngrok_url + WS_URI
     yield
     print("[Shutdown] Shutting down sender...")
 
@@ -206,6 +211,47 @@ app.add_middleware(
 
 # Include routers
 # app.include_router(router, prefix="/simulate", tags=["Simulate"])
+
+
+@app.get("/test/full-pipeline")
+async def test_pipeline():
+    timestamp = datetime.datetime.utcnow().isoformat() + "Z"
+    message = {
+        "type": "test",
+        "timestamp": timestamp,
+        "origin": "webcam-to-websocket-simulation",
+    }
+    try:
+        async with websockets.connect(
+            app.state.ws_url + "simulate/ws/test"
+        ) as websocket:
+            await websocket.send(json.dumps(message))
+            response = await websocket.recv()
+            print(f"[{timestamp}] Response: {response}")
+            return response
+    except Exception as e:
+        print(f"[ERROR] {timestamp}: {e}")
+        return json.dumps({"error": str(e)})
+
+
+async def send_image(session_id: str, image: Image.Image):
+    image_base64 = pil_image_to_base64(image)
+    payload = {
+        "type": "simulate",
+        "session_id": session_id,
+        "image_base64": image_base64,
+    }
+    try:
+        async with websockets.connect(
+            app.state.ws_url + "simulate/ws/simulate-image-to-waveform-latent"
+        ) as websocket:
+            await websocket.send(json.dumps(payload))
+            response = await websocket.recv()
+            print(f"[{session_id}] Response: {response}")
+            return response
+    except Exception as e:
+        print(f"[ERROR] {session_id}: {e}")
+        return json.dumps({"error": str(e)})
 
 
 @app.post("/simulate-test-images")
